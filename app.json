@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "ClubMotorApp",
+    "slug": "ClubMotorApp",
+    "version": "1.0.0",
+    "platforms": ["ios", "android"],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Aplikasi membutuhkan lokasi untuk menampilkan peta dan rute.",
+        "NSLocationAlwaysUsageDescription": "Aplikasi membutuhkan akses lokasi secara terus-menerus untuk memantau rute perjalanan secara realtime.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Aplikasi membutuhkan akses lokasi di background untuk fitur rute perjalanan."
+      },
+      "backgroundColor": "#FFFFFF",
+      "bundleIdentifier": "com.yourcompany.clubmotorapp",
+      "buildNumber": "1.0.0",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlistOverrides": {
+        "UIBackgroundModes": ["location"]
+      }
+    },
+    "android": {
+      "package": "com.yourcompany.clubmotorapp",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
+      ]
+    },
+    "extra": {}
+  }
+}
