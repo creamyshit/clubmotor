@@ -4,7 +4,7 @@ import { TouchableOpacity, Text, Alert } from 'react-native';
 
 export default function EmergencyButton({ eventId }) {
   const sendEmergencySignal = () => {
-    fetch(`https://your-backend-api.com/events/${eventId}/emergency`, {
+    fetch(`https://1d9b-158-140-190-176.ngrok-free.app/${eventId}/emergency`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: 'currentUserId', timestamp: Date.now() }),

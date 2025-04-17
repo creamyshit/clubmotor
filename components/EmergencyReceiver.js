@@ -9,7 +9,7 @@ export default function EmergencyReceiver({ eventId }) {
   // Fungsi polling untuk mendapatkan status sinyal darurat
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch(`https://your-backend-api.com/events/${eventId}/emergency-status`)
+      fetch(`https://1d9b-158-140-190-176.ngrok-free.app/events/${eventId}/emergency-status`)
         .then(response => response.json())
         .then(data => {
           // Anggap data.active bernilai true jika ada sinyal darurat aktif

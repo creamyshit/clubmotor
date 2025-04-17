@@ -7,7 +7,7 @@ export default function EventList({ navigation }) {
   
   useEffect(() => {
     // Fetch daftar event dari backend
-    fetch('https://7065-114-10-27-48.ngrok-free.app/events')
+    fetch('https://1d9b-158-140-190-176.ngrok-free.app/events')
       .then(response => response.json())
       .then(data => setEvents(data))
       .catch(error => console.error('Error fetching events:', error));

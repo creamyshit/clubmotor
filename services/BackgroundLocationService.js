@@ -1,10 +1,9 @@
-// BackgroundLocationService.js
+// services/BackgroundLocationService.js
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 
 const LOCATION_TASK_NAME = 'background-location-task';
 
-// Definisikan background task
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   if (error) {
     console.error('Background location task error:', error);
@@ -12,17 +11,17 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   }
   if (data) {
     const { locations } = data;
-    if (locations && locations.length > 0) {
-      const location = locations[0];
+    if (locations?.length > 0) {
+      const { coords, timestamp } = locations[0];
       try {
-        await fetch('http://192.168.31.158:8080/events/update-location', {
+        await fetch('https://1d9b-158-140-190-176.ngrok-free.app/events/update-location', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId: 'currentUserId', // Ganti dengan ID user sebenarnya
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            timestamp: location.timestamp,
+            userId: 'currentUserId', // replace dynamically later
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            timestamp,
           }),
         });
       } catch (err) {
@@ -32,24 +31,31 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   }
 });
 
-// Fungsi untuk memulai background location dengan parameter yang hemat baterai
 export async function startBackgroundLocation() {
-  const { status } = await Location.requestBackgroundPermissionsAsync();
-  if (status !== 'granted') {
-    console.warn('Permission to access background location was denied');
+  let bgPerm = { status: 'undetermined' };
+  try {
+    bgPerm = await Location.requestBackgroundPermissionsAsync();
+  } catch (err) {
+    console.warn('Background permission API unavailable:', err);
     return;
   }
+  if (bgPerm.status !== 'granted') {
+    console.warn('Background location permission denied');
+    return;
+  }
+
   await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-    accuracy: Location.Accuracy.Balanced, // Mode hemat baterai
-    timeInterval: 15000, // Update setiap 15 detik (dapat disesuaikan)
-    distanceInterval: 100, // Update hanya jika berpindah 100 meter
+    accuracy: Location.Accuracy.Balanced,
+    timeInterval: 15000,
+    distanceInterval: 100,
     mayShowUserSettingsDialog: true,
   });
 }
 
-// Fungsi untuk menghentikan background location
 export async function stopBackgroundLocation() {
-  const hasStarted = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
+  const hasStarted = await Location.hasStartedLocationUpdatesAsync(
+    LOCATION_TASK_NAME
+  );
   if (hasStarted) {
     await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
   }

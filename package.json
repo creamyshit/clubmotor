@@ -30,8 +30,6 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@expo/metro-config": "^0.19.12",
-    "@react-native-community/cli": "^18.0.0",
-    "@react-native/metro-config": "^0.79.1",
     "metro": "^0.81.0",
     "metro-config": "^0.81.0",
     "metro-resolver": "^0.81.0"

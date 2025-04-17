@@ -5,7 +5,7 @@ export default function Profile({ authData, navigation, setAuthData }) {
   const [profile, setProfile] = useState(null);
 
   const fetchProfile = () => {
-    fetch('https://7065-114-10-27-48.ngrok-free.app/profile', {
+    fetch('https://1d9b-158-140-190-176.ngrok-free.app/profile', {
       headers: {
         'Authorization': `Bearer ${authData.token}`
       }

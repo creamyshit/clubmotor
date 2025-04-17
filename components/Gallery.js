@@ -7,7 +7,7 @@ export default function Gallery({ eventId, userJoined }) {
   const [media, setMedia] = useState([]);
 
   useEffect(() => {
-    fetch(`https://your-backend-api.com/events/${eventId}/gallery`)
+    fetch(`https://1d9b-158-140-190-176.ngrok-free.app/events/${eventId}/gallery`)
       .then(response => response.json())
       .then(data => setMedia(data))
       .catch(error => console.error('Error fetching gallery:', error));

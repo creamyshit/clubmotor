@@ -7,7 +7,7 @@ export default function Register({ navigation }) {
   const [password, setPassword] = useState('');
 
   const handleRegister = () => {
-    fetch('https://7065-114-10-27-48.ngrok-free.app/register', {
+    fetch('https://1d9b-158-140-190-176.ngrok-free.app/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, email, password })

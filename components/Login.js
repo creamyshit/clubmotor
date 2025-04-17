@@ -6,7 +6,7 @@ export default function Login({ navigation, setAuthData }) {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    fetch('https://7065-114-10-27-48.ngrok-free.app/login', {
+    fetch('https://1d9b-158-140-190-176.ngrok-free.app/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })

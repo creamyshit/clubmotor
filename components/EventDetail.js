@@ -28,16 +28,30 @@ export default function EventDetail({ route, navigation }) {
     { key: 'realtime', title: 'Real Time' }
   ]);
 
-  // 1. Request lokasi (foreground dan background) saat komponen dipasang
+  // 1) Request permissions (with error‐handling!)
   useEffect(() => {
     (async () => {
-      const { status: fgStatus } = await Location.requestForegroundPermissionsAsync();
-      const { status: bgStatus } = await Location.requestBackgroundPermissionsAsync();
-      if (fgStatus !== 'granted' || bgStatus !== 'granted') {
-        Alert.alert(
-          'Izin Lokasi',
-          'Izin lokasi foreground dan background belum diberikan. Untuk fungsi realtime, aktifkan izin lokasi di pengaturan.'
-        );
+      try {
+        const { status: fgStatus } =
+          await Location.requestForegroundPermissionsAsync();
+        let bgStatus = 'undetermined';
+        try {
+          const bg = await Location.requestBackgroundPermissionsAsync();
+          bgStatus = bg.status;
+        } catch (err) {
+          console.warn(
+            'Background permission request unavailable:',
+            err.message
+          );
+        }
+        if (fgStatus !== 'granted' || bgStatus !== 'granted') {
+          Alert.alert(
+            'Izin Lokasi',
+            'Izin lokasi foreground dan background belum diberikan. Untuk fungsi realtime, aktifkan izin lokasi di pengaturan.'
+          );
+        }
+      } catch (err) {
+        console.error('Permission request error:', err);
       }
     })();
   }, []);
@@ -45,7 +59,7 @@ export default function EventDetail({ route, navigation }) {
   // 2. Fetch detail event dari backend
   useEffect(() => {
     // Ganti URL backend sesuai konfigurasi
-    fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}`)
+    fetch(`https://1d9b-158-140-190-176.ngrok-free.app/events/${eventId}`)
       .then(response => response.json())
       .then(data => {
         setEvent(data.event);
@@ -92,7 +106,7 @@ export default function EventDetail({ route, navigation }) {
   // Fungsi join event
   const handleJoin = () => {
     if (event.joinType === 'free') {
-      fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/join`, {
+      fetch(`https://1d9b-158-140-190-176.ngrok-free.app/events/${eventId}/join`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: 'currentUserId', name: 'Nama User' }),
@@ -104,7 +118,7 @@ export default function EventDetail({ route, navigation }) {
         })
         .catch(error => console.error('Error joining event:', error));
     } else if (event.joinType === 'approval') {
-      fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/join-request`, {
+      fetch(`https://1d9b-158-140-190-176.ngrok-free.app/events/${eventId}/join-request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: 'currentUserId', name: 'Nama User' }),
@@ -119,7 +133,7 @@ export default function EventDetail({ route, navigation }) {
 
   // Fungsi cancel participation
   const handleCancelParticipation = () => {
-    fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/cancel`, {
+    fetch(`https://1d9b-158-140-190-176.ngrok-free.app/events/${eventId}/cancel`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: 'currentUserId' }),
@@ -136,7 +150,7 @@ export default function EventDetail({ route, navigation }) {
   const ParticipantsList = () => {
     const [participants, setParticipants] = useState([]);
     useEffect(() => {
-      fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/participants/location`)
+      fetch(`https://1d9b-158-140-190-176.ngrok-free.app/events/${eventId}/participants/location`)
         .then(response => response.json())
         .then(data => setParticipants(data))
         .catch(error => console.error('Error fetching participants:', error));

@@ -9,7 +9,7 @@ export default function RealTimeMap({ eventId }) {
   useEffect(() => {
     // Update lokasi peserta setiap 10 detik (interval ini dapat disesuaikan)
     const intervalId = setInterval(() => {
-      fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/participants/location`)
+      fetch(`https://1d9b-158-140-190-176.ngrok-free.app/events/${eventId}/participants/location`)
         .then(response => response.json())
         .then(data => setParticipants(data))
         .catch(error => console.error('Error fetching participant locations:', error));
