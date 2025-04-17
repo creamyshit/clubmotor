@@ -70,15 +70,23 @@ export default function EventDetail({ route, navigation }) {
 
   // 3. Atur background location: start jika event on progress dan user telah join
   useEffect(() => {
-    if (event && event.status === 'on progress') {
-      startBackgroundLocation();
-    } else {
-      stopBackgroundLocation();
+    async function manageBgLocation() {
+      try {
+        if (event?.status === 'on progress' && userJoined) {
+          await startBackgroundLocation();
+        } else {
+          await stopBackgroundLocation();
+        }
+      } catch (err) {
+        console.warn('Failed to (stop/)start bg location:', err);
+      }
     }
+    manageBgLocation();
+    // on unmount, ensure we stop
     return () => {
-      stopBackgroundLocation();
+      stopBackgroundLocation().catch(() => {});
     };
-  }, [event, userJoined]);
+  }, [event, userJoined]);  
 
   // Parsing JSON safe untuk kolom points
   let points = [];

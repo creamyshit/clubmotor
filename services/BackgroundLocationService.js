@@ -35,28 +35,30 @@ export async function startBackgroundLocation() {
   let bgPerm = { status: 'undetermined' };
   try {
     bgPerm = await Location.requestBackgroundPermissionsAsync();
+    if (bgPerm.status !== 'granted') {
+      console.warn('Background location permission denied');
+      return;
+    }
+    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+      accuracy: Location.Accuracy.Balanced,
+      timeInterval: 15000,
+      distanceInterval: 100,
+      mayShowUserSettingsDialog: true,
+    });
   } catch (err) {
-    console.warn('Background permission API unavailable:', err);
-    return;
+    console.warn('startBackgroundLocation error:', err);
   }
-  if (bgPerm.status !== 'granted') {
-    console.warn('Background location permission denied');
-    return;
-  }
-
-  await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-    accuracy: Location.Accuracy.Balanced,
-    timeInterval: 15000,
-    distanceInterval: 100,
-    mayShowUserSettingsDialog: true,
-  });
 }
 
 export async function stopBackgroundLocation() {
-  const hasStarted = await Location.hasStartedLocationUpdatesAsync(
-    LOCATION_TASK_NAME
-  );
-  if (hasStarted) {
-    await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+  try {
+    const hasStarted = await Location.hasStartedLocationUpdatesAsync(
+      LOCATION_TASK_NAME
+    );
+    if (hasStarted) {
+      await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+    }
+  } catch (err) {
+    console.warn('stopBackgroundLocation error:', err);
   }
 }
