@@ -32,17 +32,28 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 });
 
 export async function startBackgroundLocation() {
-  let bgPerm = { status: 'undetermined' };
   try {
-    bgPerm = await Location.requestBackgroundPermissionsAsync();
-    if (bgPerm.status !== 'granted') {
-      console.warn('Background location permission denied');
+    const { status: fgStatus } =
+      await Location.requestForegroundPermissionsAsync();
+    const { status: bgStatus } =
+      await Location.requestBackgroundPermissionsAsync();
+
+    if (fgStatus !== 'granted' || bgStatus !== 'granted') {
+      console.warn('Location permissions not granted:', fgStatus, bgStatus);
       return;
     }
+
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-      accuracy: Location.Accuracy.Balanced,
+      accuracy: Location.Accuracy.Highest,
       timeInterval: 15000,
-      distanceInterval: 100,
+      distanceInterval: 50,
+      // **This is the key**: Android will show this notification and keep your task alive
+      foregroundService: {
+        notificationTitle: 'Club Motor Tracking',
+        notificationBody:
+          'Your ride location is being recorded in the background.',
+        notificationColor: '#FF0000',
+      },
       mayShowUserSettingsDialog: true,
     });
   } catch (err) {
@@ -52,10 +63,10 @@ export async function startBackgroundLocation() {
 
 export async function stopBackgroundLocation() {
   try {
-    const hasStarted = await Location.hasStartedLocationUpdatesAsync(
+    const started = await Location.hasStartedLocationUpdatesAsync(
       LOCATION_TASK_NAME
     );
-    if (hasStarted) {
+    if (started) {
       await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
     }
   } catch (err) {

@@ -3,6 +3,10 @@
     "name": "ClubMotorApp",
     "slug": "ClubMotorApp",
     "version": "1.0.0",
+    "plugins":  [
+      "expo-location",
+      "expo-task-manager"
+    ],
     "platforms": [
       "ios",
       "android"
@@ -28,7 +32,8 @@
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION"
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE"
       ]
     },
     "extra": {

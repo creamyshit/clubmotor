@@ -1,4 +1,5 @@
 // App.js
+import './services/BackgroundLocationService';
 import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
