@@ -45,7 +45,7 @@ export default function EventDetail({ route, navigation }) {
   // 2. Fetch detail event dari backend
   useEffect(() => {
     // Ganti URL backend sesuai konfigurasi
-    fetch(`http://192.168.31.158:8080/events/${eventId}`)
+    fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}`)
       .then(response => response.json())
       .then(data => {
         setEvent(data.event);
@@ -92,7 +92,7 @@ export default function EventDetail({ route, navigation }) {
   // Fungsi join event
   const handleJoin = () => {
     if (event.joinType === 'free') {
-      fetch(`http://YOUR_BACKEND_URL/events/${eventId}/join`, {
+      fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/join`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: 'currentUserId', name: 'Nama User' }),
@@ -104,7 +104,7 @@ export default function EventDetail({ route, navigation }) {
         })
         .catch(error => console.error('Error joining event:', error));
     } else if (event.joinType === 'approval') {
-      fetch(`http://YOUR_BACKEND_URL/events/${eventId}/join-request`, {
+      fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/join-request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: 'currentUserId', name: 'Nama User' }),
@@ -119,7 +119,7 @@ export default function EventDetail({ route, navigation }) {
 
   // Fungsi cancel participation
   const handleCancelParticipation = () => {
-    fetch(`http://YOUR_BACKEND_URL/events/${eventId}/cancel`, {
+    fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/cancel`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: 'currentUserId' }),
@@ -136,7 +136,7 @@ export default function EventDetail({ route, navigation }) {
   const ParticipantsList = () => {
     const [participants, setParticipants] = useState([]);
     useEffect(() => {
-      fetch(`http://YOUR_BACKEND_URL/events/${eventId}/participants/location`)
+      fetch(`https://7065-114-10-27-48.ngrok-free.app/events/${eventId}/participants/location`)
         .then(response => response.json())
         .then(data => setParticipants(data))
         .catch(error => console.error('Error fetching participants:', error));
