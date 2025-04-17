@@ -1,29 +1,27 @@
 // App.js
-import React, { useState } from 'react';
-import { Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ActivityIndicator, StyleSheet, Button } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-// Import komponen yang sudah ada
 import Login from './components/Login';
 import Register from './components/Register';
-import NewsScreen from './components/News'; // Halaman News (placeholder atau sesuai implementasi kamu)
-import EventList from './components/EventList'; // Halaman EventList yang sudah kamu miliki
-import JualBeliScreen from './components/JualBeli'; // Halaman Jual & Beli
+import NewsScreen from './components/News';
+import EventList from './components/EventList';
+import JualBeliScreen from './components/JualBeli';
 import Profile from './components/Profile';
 import EventDetail from './components/EventDetail';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Navigator untuk menu utama menggunakan bottom tab
 function MainTabNavigator() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="News" component={NewsScreen} />
-      {/* Gunakan EventList pada tab "Events" */}
       <Tab.Screen name="Events" component={EventList} />
       <Tab.Screen
         name="JualBeli"
@@ -34,7 +32,6 @@ function MainTabNavigator() {
   );
 }
 
-// Navigator utama yang menggabungkan bottom tab dan layar lain
 function MainStack({ authData, setAuthData }) {
   return (
     <Stack.Navigator>
@@ -43,7 +40,6 @@ function MainStack({ authData, setAuthData }) {
         component={MainTabNavigator}
         options={({ navigation }) => ({
           headerTitle: 'Club Motor',
-          // Tombol Profile di header untuk navigasi ke halaman Profile
           headerRight: () => (
             <Button
               title="Profile"
@@ -52,12 +48,13 @@ function MainStack({ authData, setAuthData }) {
           ),
         })}
       />
-      <Stack.Screen
-        name="Profile"
-        options={{ headerTitle: 'Profile' }}
-      >
+      <Stack.Screen name="Profile" options={{ headerTitle: 'Profile' }}>
         {(props) => (
-          <Profile {...props} authData={authData} setAuthData={setAuthData} />
+          <Profile
+            {...props}
+            authData={authData}
+            setAuthData={setAuthData}
+          />
         )}
       </Stack.Screen>
       <Stack.Screen
@@ -70,8 +67,41 @@ function MainStack({ authData, setAuthData }) {
 }
 
 export default function App() {
-  // authData akan menyimpan { user, token } bila sudah login, atau null jika belum
   const [authData, setAuthData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load stored auth data on mount
+  useEffect(() => {
+    AsyncStorage.getItem('authData')
+      .then((json) => {
+        if (json) {
+          const data = JSON.parse(json);
+          setAuthData(data);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  // Whenever authData changes, persist (or remove)
+  useEffect(() => {
+    if (authData) {
+      AsyncStorage.setItem('authData', JSON.stringify(authData)).catch(
+        console.error
+      );
+    } else {
+      AsyncStorage.removeItem('authData').catch(console.error);
+    }
+  }, [authData]);
+
+  // While loading stored data, show splash
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -79,10 +109,11 @@ export default function App() {
         {authData ? (
           <MainStack authData={authData} setAuthData={setAuthData} />
         ) : (
-          // Jika belum login, tampilkan layar autentikasi (Login dan Register)
           <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login">
-              {(props) => <Login {...props} setAuthData={setAuthData} />}
+              {(props) => (
+                <Login {...props} setAuthData={setAuthData} />
+              )}
             </Stack.Screen>
             <Stack.Screen name="Register" component={Register} />
           </Stack.Navigator>
@@ -91,3 +122,7 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+});

@@ -196,7 +196,7 @@ export default function EventDetail({ route, navigation }) {
   }
 
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       {/* Peta statis dengan rute (polyline) dan marker yang menghubungkan titik-titik */}
       <MapView style={{ height: 200 }} initialRegion={initialRegion}>
         {points.length > 0 && (
@@ -248,6 +248,6 @@ export default function EventDetail({ route, navigation }) {
           <EmergencyButton eventId={eventId} />
         </View>
       )}
-    </ScrollView>
+    </View>
   );
 }
